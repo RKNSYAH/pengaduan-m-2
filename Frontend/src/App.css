@@ -103,7 +103,7 @@
 
 #tableContainer{
   margin: 10px 70px 70px;
-  box-shadow: 0px 1px 50px rgba( 0, 0, 0, 0.2 );
+  /* box-shadow: 0px 1px 50px rgba( 0, 0, 0, 0.1 ); */
 }
 #mainHeader {
   position: relative;
