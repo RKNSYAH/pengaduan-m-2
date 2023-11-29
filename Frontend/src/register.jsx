@@ -14,6 +14,7 @@ function Register() {
 
 
     async function register() {
+      
         const payload = {nama, username, nik, telp, password, confirmPassword };
         const res = await fetch("http://localhost:5000/masyarakat", {
           method: "POST",

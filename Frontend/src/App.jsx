@@ -17,11 +17,9 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json", },
         body: JSON.stringify(payload),
-        credentials : 'include',
       });
       const data = await res.json();
       if (res.status == 200) {
-        console.log(data.token);
         return navigate("/pengaduan");
       } if(res.status == 406){
         setErrorMsg(data)
