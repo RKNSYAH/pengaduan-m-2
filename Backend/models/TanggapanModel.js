@@ -7,11 +7,13 @@ const {DataTypes} = Sequelize;
 const Tanggapan = db.define("tanggapan",{
     id_tanggapan:{
         type:DataTypes.UUID,
-        defaultValue:DataTypes.UUIDV1,
+        defaultValue:DataTypes.UUIDV4,
         primaryKey:true,
     },
-    tgl_tanggapan:DataTypes.DATE,
+    tgl_tanggapan:{ type: DataTypes.DATE, defaultValue: Sequelize.NOW() },
     tanggapan:DataTypes.TEXT,
+    id_pengaduan: DataTypes.UUID,
+    id_petugas: DataTypes.UUID
 })
 
 

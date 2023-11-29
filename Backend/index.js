@@ -8,8 +8,7 @@ const app = express()
 const PORT = 5000;
 
 app.use(cors({
-    credentials: true,
-    origin: "http://localhost:5173"
+    origin: "*"
 }));
 app.use(express.json());
 app.use(fileUpload());
@@ -17,6 +16,5 @@ app.use(express.urlencoded({extended: true}))
 
 app.use(express.static("public"))
 app.use(Route) 
-
-
+db.sync()
 app.listen(PORT,() => console.log(`serve berjalan di http://localhost:${PORT}`))

@@ -6,7 +6,7 @@ const { DataTypes } = Sequelize;
 const Petugas = db.define("petugas", {
     id_petugas: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV1,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
     },
     nama_petugas: DataTypes.STRING,

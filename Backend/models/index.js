@@ -14,6 +14,7 @@ Pengaduan.hasMany(Tanggapan, {
 
 Tanggapan.belongsTo(Petugas,{
     foreignKey:"id_petugas",
+    onDelete:"CASCADE"
 })
 
 Petugas.hasMany(Tanggapan,{
