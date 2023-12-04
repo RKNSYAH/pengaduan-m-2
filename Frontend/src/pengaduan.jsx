@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import jwtDecode from "jwt-decode";
 import Modal from "react-modal";
+import Cookies from 'js-cookie';
+import AppBar from "./components/AppBar";
+
 function Pengaduan() {
   const [data, setData] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -9,7 +11,7 @@ function Pengaduan() {
   const [isiLaporan, setIsiLaporan] = useState(false);
   const [status, setStatus] = useState(false);
   const [gambar, setGambar] = useState()
-
+  const [cookieLevel, setCookieLevel] = useState();
   const navigate = useNavigate();
 
   const formdata = new FormData()
@@ -19,6 +21,13 @@ function Pengaduan() {
     formdata.append("image", gambar)
     formdata.append("isi_laporan", isiLaporan)
     formdata.append("status", status)
+  }
+  
+  function getCookie(){
+    const cookie = Cookies.get()
+    if(cookie.hasOwnProperty('cookiePetugas')) setCookieLevel("Petugas")
+    else if(cookie.hasOwnProperty('cookieMasyarakat')) setCookieLevel("Masyarakat")
+    else console.log('logout')
   }
 
   async function fetchLaporan() {
@@ -33,8 +42,8 @@ function Pengaduan() {
 
     if (res.status === 200)
       setTimeout(async () => {
-        await fetchLaporan();
-      }, 100);
+    await fetchLaporan();
+  }, 100);
   }
   function openModal() {
     setModalIsOpen(true);
@@ -45,6 +54,7 @@ function Pengaduan() {
   }
 
   useEffect(() => {
+    getCookie()
     fetchLaporan();
   }, []);
   const customStyles = {
@@ -60,18 +70,13 @@ function Pengaduan() {
 
   return (
     <>
+    <AppBar />
       <div id="userContainer" className="flex flex-col items-center">
         <h2>Daftar Laporan Masyarakat</h2>
         <div
           id="utilContainer"
           className="flex flex-row justify-around align w-full box-border"
         >
-          <button
-            className="rounded bg-blue-400 px-3 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out"
-            onClick={fetchLaporan}
-          >
-            Refresh
-          </button>
           <button
             className="rounded bg-blue-400 px-3 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out"
             onClick={() => openModal()}
@@ -127,7 +132,7 @@ function Pengaduan() {
           className="max-w-5xl flex-wrap w-screen shadow flex justify-start flex-row "
         >
           {data.map((item, index) => (
-            <div className="block ml-3 mb-4 mt-4 max-w-[25em] max-h-[25em] rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
+            <div key={index} className="block ml-3 mb-4 mt-4 max-w-[25em] max-h-[25em] rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
               <img className="rounded-t-lg w-60 h-52" src={item.url} alt="" />
 
               <div className="p-6">
