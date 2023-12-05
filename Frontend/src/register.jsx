@@ -32,7 +32,7 @@ function Register() {
       }
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen items-center justify-center">
       <div id="loginContainer">
         <p style={{fontWeight: 'bold', fontSize: '26px'}}>Create An Account</p>
         <div id="inputContainer">
@@ -95,7 +95,7 @@ function Register() {
           <a href="/">Have an account? Login</a>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

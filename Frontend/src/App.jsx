@@ -62,7 +62,7 @@ function App() {
       </>
     );
   }
-  return <div id="loginContainer"><Login /></div>;
+  return <div className="flex flex-col min-h-screen items-center justify-center"><div id="loginContainer"><Login /></div></div>;
 }
 
 export default App;

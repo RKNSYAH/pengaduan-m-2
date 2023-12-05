@@ -12,15 +12,29 @@ function Pengaduan() {
   const [status, setStatus] = useState(false);
   const [gambar, setGambar] = useState()
   const [cookieLevel, setCookieLevel] = useState();
+  const [errorMsg, setErrorMsg] = useState({});
   const navigate = useNavigate();
 
-  const formdata = new FormData()
-
+  
   async function addPengaduan() {
+    const formdata = new FormData()
     formdata.append("nik", nik)
     formdata.append("image", gambar)
     formdata.append("isi_laporan", isiLaporan)
     formdata.append("status", status)
+
+    const res = await fetch(`http://localhost:5000/pengaduan`, {
+      method: "POST",
+      body: formdata
+    });
+    const data = await res.json();
+      setErrorMsg(data)
+    if(res.status == 200) {
+      fetchLaporan()
+      closeModal()
+      setErrorMsg({});
+    }
+
   }
   
   function getCookie(){
@@ -28,6 +42,7 @@ function Pengaduan() {
     if(cookie.hasOwnProperty('cookiePetugas')) setCookieLevel("Petugas")
     else if(cookie.hasOwnProperty('cookieMasyarakat')) setCookieLevel("Masyarakat")
     else console.log('logout')
+    console.log(Cookies.get())
   }
 
   async function fetchLaporan() {
@@ -70,7 +85,7 @@ function Pengaduan() {
 
   return (
     <>
-    <AppBar />
+    <AppBar level={cookieLevel} />
       <div id="userContainer" className="flex flex-col items-center">
         <h2>Daftar Laporan Masyarakat</h2>
         <div
@@ -90,7 +105,7 @@ function Pengaduan() {
           contentLabel="Example Modal"
           style={customStyles}
         >
-          <button onClick={closeModal} className="inline-block rounded w-20 bg-red-500 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-red-500/50 transition duration-150 ease-in-out shadow hover:shadow-red-600/50">cancel</button>
+          <button onClick={closeModal} className="inline-block rounded w-20 bg-red-500 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-red-500/50 transition duration-150 ease-in-out shadow hover:shadow-red-600/50">cancel</button>
           <h2>Tambah Pengaduan</h2>
           <div className="flex flex-col">
             <label>Pilih Gambar : </label>
@@ -119,9 +134,11 @@ function Pengaduan() {
               type="text"
               onChange={(e) => setStatus(e.target.value)}
             ></input>
+            <p style={{color: "red", margin: 0}}>{errorMsg.msg}</p>
             <button
               type="button"
-              className="inline-block rounded bg-green-500 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-green-500/50 transition duration-150 ease-in-out shadow hover:shadow-green-600/50"
+              onClick={() => addPengaduan()}
+              className="inline-block rounded bg-green-500 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-green-500/50 transition duration-150 ease-in-out shadow hover:shadow-green-600/50"
             >
               Submit
             </button>
@@ -145,7 +162,7 @@ function Pengaduan() {
 
                 <button
                   type="button"
-                  className="inline-block mr-2 w-20 rounded bg-green-500 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-green-500/50 transition duration-150 ease-in-out shadow hover:shadow-green-600/50"
+                  className="inline-block mr-2 w-20 rounded bg-green-500 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-green-500/50 transition duration-150 ease-in-out shadow hover:shadow-green-600/50"
                 >
                   Edit
                 </button>
@@ -153,7 +170,7 @@ function Pengaduan() {
                 <button
                   type="button"
                   onClick={() => deleteLaporan(item.id_pengaduan)}
-                  className="inline-block rounded w-20 bg-red-500 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-red-500/50 transition duration-150 ease-in-out shadow hover:shadow-red-600/50"
+                  className="inline-block rounded w-20 bg-red-500 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-red-500/50 transition duration-150 ease-in-out shadow hover:shadow-red-600/50"
                 >
                   Hapus
                 </button>

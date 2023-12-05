@@ -7,20 +7,54 @@ const {
 const bcryptjs = require("bcrypt");
 const path = require("path");
 const fs = require("fs");
+const jwt = require("jsonwebtoken");
+
 exports.login = async (req, res) => {
   try {
     const payload = req.body;
-    const userdata = await Masyarakat.findOne({
-      where: { username: payload.username },
-    });
-    if (userdata) {
+    const petugasdata = await Petugas.findOne({
+      where: { username: payload.username }
+    })
+    res.clearCookie("cookieMasyarakat");
+    res.clearCookie("cookiePetugas");
+    if(!petugasdata) {
+      const userdata = await Masyarakat.findOne({
+        where: { username: payload.username },
+      });
+      if (userdata) {
+        const hashcheck = bcryptjs.compareSync(
+          payload.password,
+          userdata.password
+        );
+        if (!hashcheck) return res.status(406).json({ msg: "Password Salah" });
+        const accessToken = jwt.sign(
+          { nik: userdata.nik, nama: userdata.nama, level: "masyarakat" },
+          process.env.ACCESS_TOKEN_SECRET,
+          {
+            expiresIn: "30s",
+          }
+        );
+        res.cookie('cookieMasyarakat', accessToken)
+        return res.status(200).json(userdata);
+      } else return res.status(406).json({ msg: "Akun tidak ditemukan" });
+    }
+    if (petugasdata) {
+      let level = petugasdata.level
       const hashcheck = bcryptjs.compareSync(
         payload.password,
-        userdata.password
+        petugasdata.password
       );
       if (!hashcheck) return res.status(406).json({ msg: "Password Salah" });
-      return res.status(200).json(userdata);
-    } else return res.status(406).json({ msg: "Akun tidak ditemukan" });
+      const accessToken = jwt.sign(
+        { nik: petugasdata.nik, nama: petugasdata.nama_petugas, level: level },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: "30s",
+        }
+      );
+      res.cookie('cookiePetugas', accessToken)
+      return res.status(200).json(petugasdata);
+    } 
   } catch (error) {
     console.error(error);
   }
@@ -203,7 +237,7 @@ exports.postPengaduan = async (req, res) => {
     payload["foto"] = filename;
     const data = await Pengaduan.create(payload);
 
-    res.status(200).send(data);
+    res.status(200).send({msg: "Laporan Terkirim" ,data});
   } catch (error) {
     console.error(error);
     res.status(400).send(error);
